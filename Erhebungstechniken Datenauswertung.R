@@ -1,11 +1,15 @@
-##Test Esther weil Überforderung
-
 
 library(openxlsx)
-setwd("~/UNI/Erhebungstechniken/Bericht")
-
+#einlesen Greta
+#setwd("~/UNI/Erhebungstechniken/Bericht")
 # Daten Einlesen aus der Excel-Datei:
-sport <- read.xlsx("Datensatz roh.xlsx")
+#sport <- read.xlsx("Datensatz roh.xlsx")
+
+#einlesen Esther
+setwd("C:/Users/esthe/Documents/Studium/Statistik/3. Semenster/Erhebnungstechniken/Projekt/Daten")
+sport<- read.xlsx("Rohdaten.xlsx")
+
+
 
 # Datensatz unbearbeitet als R-Datensatz speichern:
 save(sport, file = "Sportdaten_unbearbeitet.RData")
@@ -158,16 +162,16 @@ save(sport, file = "Sportdaten_bereinigt.RData")
 # Alter
 barplot(table(sport$alter), main = "Alter der Befragten", xlab = "Alter [Jahre]", ylab = "HÃ¤ufigkeit")
 
-# Vergleich der GrÃ¼nde
+# Vergleich der Gruende
 sport$grund_vor[sport$grund_vor == "Schulsport"] <- NA
 grund <- matrix(c(table(sport$grund_vor), table(sport$grund_lock), table(sport$grund_mom)), nrow = 3,
                 byrow = TRUE)
 
-pdf("Vergleich_GrÃ¼nde.pdf")
+pdf("Vergleich_Gruende.pdf")
 par(mai = c(1, 2, 1, 1))
 barplot(grund, beside = TRUE, col = c("blue", "darkblue", "lightblue"),
-        main = "Vergleich der GrÃ¼nde in den verschiedenen ZeitrÃ¤umen",
-        xlab = "absolute HÃ¤ufigkeit",
+        main = "Vergleich der Gruende in den verschiedenen Zeitraeumen",
+        xlab = "absolute Haeufigkeit",
         names.arg = c("Aussehen", "Gesundheit", "Langeweile", "soziale Kontakte", "SpaÃŸ", "sportlicher Erfolg"),
         horiz = TRUE, las =1)
 legend("right", fill = c("blue", "darkblue", "lightblue"), box.lty = 0,
@@ -186,3 +190,20 @@ barplot(table(sport$a_2[sport$m_i_vor %in% c(0,1)])) # Auswirkungen auf mom. Spo
 barplot(table(sport$a_3))
 barplot(table(sport$a_1))
 barplot(table(sport$a_1))
+
+
+#Vergleich Aussagen am Ende
+pdf("Vergleich_Aussagen.pdf")
+par(mai = c(1,6,1,1))
+statements <- matrix(c(table(sport$a_1), table(sport$a_2), table(sport$a_3), table(sport$a_4), table(sport$a_5)), nrow = 5,
+                byrow = TRUE)
+barplot(statements, beside = TRUE, col = c("blue", "darkblue", "lightblue", "red", "green"),
+        main = "Vergleich der Aussagen",
+        xlab = "absolute Haeufigkeit",
+        names.arg = c(paste("Während des Lockdowns hat sich", "/n" , "mein Sportverhalten verändert"), "Die Pandemie hatte auch Auswirkungen auf mein momentanes Sportverhalten", "Vor dem 1. Lockdown war ich im Allgemeinen motiviert, Sport zu treiben", "Während des 1. Lockdowns war ich im Allgemeinen motiviert, Sport zu treiben", "Momentan bin ich motiviert, Sport zu treiben"),
+        horiz = TRUE, las =1)
+legend("left", fill = c("blue", "darkblue", "lightblue", "red", "green"), box.lty = 0,
+       legend = c("stimme gar nicht zu", "Stimme eher nicht zu", "neutral", "Stimme eher zu", "Stimme voll zu"))
+#problem ist das die Achsenbeschriftung nich tkomplett drauf ist, da weil wenn ganz drauf dann sind die Grafiken nicht sichtbar
+#Idee achsenbeschriftung in 2 Zeilen
+dev.off()
