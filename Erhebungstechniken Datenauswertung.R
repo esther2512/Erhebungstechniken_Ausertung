@@ -1,4 +1,6 @@
 
+#Test Marina
+
 library(openxlsx)
 #einlesen Greta
 #setwd("~/UNI/Erhebungstechniken/Bericht")
@@ -6,8 +8,9 @@ library(openxlsx)
 #sport <- read.xlsx("Datensatz roh.xlsx")
 
 #einlesen Esther
-setwd("C:/Users/esthe/Documents/Studium/Statistik/3. Semenster/Erhebnungstechniken/Projekt/Daten")
-sport<- read.xlsx("Rohdaten.xlsx")
+#setwd("C:/Users/esthe/Documents/Studium/Statistik/3. Semenster/Erhebnungstechniken/Projekt/Daten")
+#sport<- read.xlsx("Rohdaten.xlsx")
+
 
 
 
