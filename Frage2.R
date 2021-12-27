@@ -27,6 +27,18 @@ table("voher"= sport$stunden_vor,"im Lockdown"= sport$stunden_lock)
 
     #--> 0.5135135 mehr oder gleich viel Sport
     #--> 0.4864865 weniger Sport
+#spezialisiert auf dei die vorher keinen Sport gemacht haben
+table("voher"= sport$stunden_vor==0,"im Lockdown"= sport$stunden_lock)
+#         im Lockdown
+#voher    0  0.5  2  5  8 11
+#FALSE    17  9  15 11  3  2
+#TRUE     6   1   3  4  3  0
+
+
+pdf("DauerImLockdownUnsportliche.pdf")
+barplot(c(6,1,3,4,3)/17,names.arg= c(0,0.5,2,5,8), ylab= "relative Wsk",main= "Sportverhalten der Studierenden die vorher keinen Spirt betrieben haben", ylim= c(0, 0.4), xlab= "Anzahl der Stunden pro Woche")
+dev.off()
+
 
     #TAGE
 table("vorher"= sport$tage_vor, "Lockdown"= sport$tage_lock)
@@ -39,13 +51,36 @@ table("vorher"= sport$tage_vor, "Lockdown"= sport$tage_lock)
 #5.5     0   4   3   2  0
 
 #hauptdiagonale 6+3+5+2= 16 -> 0.2162162 (gleich geblieben)
-#oberhalb       11+6+5= 22  -> 0.2972973 (vorher mehr als im Lockdown)
-#unterhalb      6+23+7 = 36 -> 0.4864865 (Lockdown mehr als vorher)
+#oberhalb       11+6+5= 22  -> 0.2972973 (vorher weniger als im Lockdown)
+#unterhalb      6+23+7 = 36 -> 0.4864865 (Lockdown weniger als vorher)
 
     #--> 0.7027027 mehr oder gleich viele tage
 
 ##--> mehr tage Sport aber gleiche Läneg-> kurzere Einheiten
 
+#in Bezug auf die Unsportlichen
+table("vorher"= sport$tage_vor==0, "Lockdown"= sport$tage_lock)
+#         Lockdown
+#vorher   0  1.5 3.5 5.5  7
+#FALSE    17  19  11   7  3
+#TRUE     6    6   4   1  0
+ 
+
+vorherSportlichT<- as.numeric(table("vorher"= sport$tage_vor==0, "Lockdown"= sport$tage_lock)[1,])
+vorherUnsportlichT<- as.numeric(table("vorher"= sport$tage_vor==0, "Lockdown"= sport$tage_lock)[2,])
+vorherInsgesamtT<- c(vorherSportlich+vorherUnsportlich)
+
+TageVeraenderung<- matrix(c(vorherSportlichT/sum(vorherSportlichT), vorherInsgesamtT/sum(vorherInsgesamtT),vorherUnsportlichT/sum(vorherUnsportlichT)), byrow= TRUE, nrow= 3)
+pdf("VeränderungSportverhaltenDifferenziertNachVorherigemSportverhaltenTage.pdf")
+barplot(TageVeraenderung, 
+        beside = TRUE, 
+        col= c("red", "blue", "yellow"),
+        main= "Veränderung des Sportverhaltens", 
+        names.arg= c(0,0.5,1.5,3.5,5.5), xlab= "Anzahl der Tage",
+        ylab= "Relative WSK", ylim = c(0, 0.45))
+legend("topright", fill = c("red", "blue", "yellow"), box.lty = 0,
+       legend = c("vorher Sportlich", "insgesamt", "unsportliche"))
+dev.off()
 
 
 ##VERGLEICH VORHER UND MOMENTAN##
@@ -165,6 +200,27 @@ legend("top", fill = c("blue", "darkblue", "lightblue"),
        legend = c("vorher", "Lockdown", "Momentan"), box.lwd = 0)
 dev.off()
 #Legende muss an andere Stelle
+
+
+
+vorherSportlichS<- as.numeric(table("vorher"= sport$stunden_vor==0, "Lockdown"= sport$stunden_lock)[1,])
+vorherUnsportlichS<- as.numeric(table("vorher"= sport$stunden_vor==0, "Lockdown"= sport$stunden_lock)[2,])
+vorherInsgesamtS<- c(vorherSportlich+vorherUnsportlich)
+
+StundenVeraenderung<- matrix(c(vorherSportlichS/sum(vorherSportlichS), c(vorherInsgesamtS,0)/sum(vorherInsgesamtS),vorherUnsportlichS/sum(vorherUnsportlichS)), byrow= TRUE, nrow= 3)
+
+
+pdf("VeränderungSportverhaltenDifferenziertNachVorherigemSportverhaltenStunden.pdf")
+barplot(StundenVeraenderung, 
+        beside = TRUE, 
+        col= c("red", "blue", "yellow"),
+        main= "Veränderung des Sportverhaltens bzgl der Stunden", 
+        names.arg= c(0,0.5,2,5,8,11), xlab= "Anzahl der Stunden",
+        ylab= "Relative WSK", ylim = c(0, 0.46))
+legend("topright", fill = c("red", "blue", "yellow"), box.lty = 0,
+       legend = c("vorher sportlich", "insgesamt", "vorher unsportliche"))
+dev.off()
+
 
 ###TEIL 2
 #kennzahlen ausrechenen Zeit und Tageaufwand
