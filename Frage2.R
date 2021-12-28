@@ -1,4 +1,7 @@
 ##Auswertung Frage 2: 
+NichtSportler<- subset(sport, sport$stunden_vor==0)
+Sportler<- subset(sport, sport$stunden_vor!=0)
+
 ##Gibt es zwei verschiedene Gruppen?
   #1) vorher wenig sport-> lockdown begonnen da Motivation bekommen
   #2) viele Leute im Lockdown kein Sport, da Motivationsprobleme
@@ -7,6 +10,7 @@
 ##Teil 1
 # teildatensatz mit Menschen mit wenig Sport Korrelationsmatrix mit Lockdown
 # vergleich Häufigkeit und Dauer
+
 
 ##VERGLEICH VORHER UND LOCKDOWN##
       #STUNDEN
@@ -68,7 +72,7 @@ table("vorher"= sport$tage_vor==0, "Lockdown"= sport$tage_lock)
 
 vorherSportlichT<- as.numeric(table("vorher"= sport$tage_vor==0, "Lockdown"= sport$tage_lock)[1,])
 vorherUnsportlichT<- as.numeric(table("vorher"= sport$tage_vor==0, "Lockdown"= sport$tage_lock)[2,])
-vorherInsgesamtT<- c(vorherSportlich+vorherUnsportlich)
+vorherInsgesamtT<- c(vorherSportlichT+vorherUnsportlichT)
 
 TageVeraenderung<- matrix(c(vorherSportlichT/sum(vorherSportlichT), vorherInsgesamtT/sum(vorherInsgesamtT),vorherUnsportlichT/sum(vorherUnsportlichT)), byrow= TRUE, nrow= 3)
 pdf("VeränderungSportverhaltenDifferenziertNachVorherigemSportverhaltenTage.pdf")
@@ -205,16 +209,15 @@ dev.off()
 
 vorherSportlichS<- as.numeric(table("vorher"= sport$stunden_vor==0, "Lockdown"= sport$stunden_lock)[1,])
 vorherUnsportlichS<- as.numeric(table("vorher"= sport$stunden_vor==0, "Lockdown"= sport$stunden_lock)[2,])
-vorherInsgesamtS<- c(vorherSportlich+vorherUnsportlich)
+vorherInsgesamtS<- c(vorherSportlichS+vorherUnsportlichS)
 
-StundenVeraenderung<- matrix(c(vorherSportlichS/sum(vorherSportlichS), c(vorherInsgesamtS,0)/sum(vorherInsgesamtS),vorherUnsportlichS/sum(vorherUnsportlichS)), byrow= TRUE, nrow= 3)
-
+StundenVeraenderung<- matrix(c(vorherSportlichS/sum(vorherSportlichS), vorherInsgesamtS/sum(vorherInsgesamtS) ,vorherUnsportlichS/sum(vorherUnsportlichS)), nrow= 3, byrow= TRUE)
 
 pdf("VeränderungSportverhaltenDifferenziertNachVorherigemSportverhaltenStunden.pdf")
 barplot(StundenVeraenderung, 
         beside = TRUE, 
         col= c("red", "blue", "yellow"),
-        main= "Veränderung des Sportverhaltens bzgl der Stunden", 
+        main= "Veränderung des Sportverhaltens", 
         names.arg= c(0,0.5,2,5,8,11), xlab= "Anzahl der Stunden",
         ylab= "Relative WSK", ylim = c(0, 0.46))
 legend("topright", fill = c("red", "blue", "yellow"), box.lty = 0,
@@ -314,3 +317,22 @@ sd(langeEineitMom)
 ##Motivation insgesammt während des 3 Phasen
 MotivationAllgemein<- matrix(c(table(sport$a_3), table(sport$a_4), table(sport$a_5)), nrow = 3)
 barplot(MotivationAllgemein/length(sport$a_3),main= "Motivationszustand", beside=TRUE, col= c("blue", "darkblue", "lightblue"), names.arg= c("unmotiviert", "eher unmotiviert", "neutral", "etwas motiviert", "motiviert"), ylim= c(0,0.4))
+
+#bei vorher Nichtsportlern
+MotivationNichtsportler<- matrix(c(table(Nichtsportler$a_3), table(Nichtsportler$a_4), table(Nichtsportler$a_5)), nrow = 3)
+barplot(MotivationNichtsportler/length(Nichtsportler$a_3),main= "Motivationszustand", beside=TRUE, col= c("blue", "darkblue", "lightblue"), names.arg= c("unmotiviert", "eher unmotiviert", "neutral", "etwas motiviert", "motiviert"), ylim= c(0,0.5))
+#legend("topright", fill= c("blue", "darkblue", "lightblue"), box.lty=0, c("Frage 3", "Frage 4", "Frage 5"))
+
+#Frage 1
+pdf("VeränderungSportverhaltenLockdown.pdf")
+MotivationLockdown<- matrix(c( table(Sportler$a_1)/sum(table(Sportler$a_1)),table(sport$a_1)/sum(table(sport$a_1)), c(table(Nichtsportler$a_1)[1:2], 0, table(Nichtsportler$a_1)[3:4])/sum(table(Nichtsportler$a_1))), nrow = 3, byrow= TRUE)
+barplot(MotivationLockdown, beside= T, col= c("red","blue", "yellow"), main= "veränderung Sportverhalten", names.arg= c("stimme gar nicht zu", "stimme eher nicht zu", " neutral", "stimmer eher zu", "stimme voll zu"), ylab= "rel WSK", ylim= c(0,0.6))
+legend("topleft", fill= c("red", "blue", "yellow"), box.lty=0, c("nichtsportler", "insgesamt", "sportler"))
+dev.off()
+#legende iwie nicht da wo hinsollte etwas zu weit links
+
+#Frage 4
+pdf("MotivationImLockdown.pdf")
+MotivationLockdown<- matrix(c( table(Sportler$a_4)/sum(table(Sportler$a_4)), table(sport$a_4)/sum(table(sport$a_4)),table(Nichtsportler$a_4)/sum(table(Nichtsportler$a_4))), nrow = 3)
+barplot(MotivationLockdown, beside= T, col= c("red","blue", "yellow"), main= "Motivation im 1. Lockdown", names.arg= c("stimme gar nicht zu", "stimme eher nicht zu", " neutral", "stimmer eher zu", "stimme voll zu"), ylab= "rel WSK")
+dev.off()
